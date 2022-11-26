@@ -22,7 +22,6 @@ class CustDrawer extends StatelessWidget {
           ),
           title: Text('Home'),
           onTap: () {
-            Navigator.pop(context);
             context.go('/');
           },
         ),
@@ -32,7 +31,6 @@ class CustDrawer extends StatelessWidget {
           ),
           title: const Text('Sessions'),
           onTap: () {
-            Navigator.pop(context);
             context.go('/alerts');
           },
         ),
@@ -41,9 +39,7 @@ class CustDrawer extends StatelessWidget {
             Icons.settings,
           ),
           title: const Text('Settings'),
-          onTap: () {
-            Navigator.pop(context);
-          },
+          onTap: () {},
         )
       ],
     ));

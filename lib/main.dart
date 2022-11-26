@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:capstone_app/Screens/AddAlert.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -41,7 +42,9 @@ class App extends StatelessWidget {
       GoRoute(
         path: "/alerts",
         builder: (context, state) => const Alerts(),
-      )
+      ),
+      GoRoute(
+          path: "/add_alert", builder: ((context, state) => const AddAlert()))
     ],
   );
 }

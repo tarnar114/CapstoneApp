@@ -9,23 +9,37 @@ class LockButton extends StatefulWidget {
 
 class LockButtonState extends State<LockButton> {
   bool locked = true;
+  bool connected = false;
   void _lockChange() {
-    setState(() {
-      locked = !locked;
-    });
+    if (!connected) {
+    } else {
+      setState(() {
+        locked = !locked;
+      });
+    }
   }
 
   List<Widget> buttonChild() {
-    if (locked) {
-      return [Icon(Icons.lock, size: 50), Text("Locked")];
-    } else {
+    if (!connected) {
       return [
         Icon(
-          Icons.lock_open,
+          Icons.wifi,
           size: 50,
         ),
-        const Text("Unlocked")
+        Text("connect")
       ];
+    } else {
+      if (locked) {
+        return [Icon(Icons.lock, size: 50), Text("Locked")];
+      } else {
+        return [
+          Icon(
+            Icons.lock_open,
+            size: 50,
+          ),
+          const Text("Unlocked")
+        ];
+      }
     }
   }
 
