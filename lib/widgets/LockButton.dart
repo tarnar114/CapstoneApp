@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 class LockButton extends StatefulWidget {
-  const LockButton({super.key});
-
+  const LockButton({required this.callback, super.key});
+  final Function callback;
   @override
   State<LockButton> createState() => LockButtonState();
 }
@@ -10,13 +11,36 @@ class LockButton extends StatefulWidget {
 class LockButtonState extends State<LockButton> {
   bool locked = true;
   bool connected = false;
+  FlutterBlue flutterBlue = FlutterBlue.instance;
+
   void _lockChange() {
-    if (!connected) {
-    } else {
-      setState(() {
-        locked = !locked;
-      });
-    }
+    // setState(() {
+    //   locked = !locked;
+    // });
+    flutterBlue.startScan(timeout: Duration(seconds: 15));
+    bool foundDevice = false;
+    ScanResult foundResult;
+// Listen to scan results
+    var subscription = flutterBlue.scanResults.listen((results) {
+      // do something with scan results
+      if (foundDevice == false) {
+        for (ScanResult r in results) {
+          if (r.device.name.isNotEmpty) {
+            print(r.device.toString());
+          }
+          if (r.device.name == "LightBlue") {
+            flutterBlue.stopScan();
+
+            connect(r);
+          }
+        }
+      }
+    });
+  }
+
+  void connect(ScanResult foundDevice) async {
+    print("-------------------------------");
+    await foundDevice.device.connect();
   }
 
   List<Widget> buttonChild() {
@@ -65,7 +89,9 @@ class LockButtonState extends State<LockButton> {
             margin: EdgeInsets.only(top: 25),
             child: ElevatedButton(
               style: style,
-              onPressed: _lockChange,
+              onPressed: () {
+                _lockChange();
+              },
               child: Center(
                 child: Column(children: buttonChild()),
               ),
