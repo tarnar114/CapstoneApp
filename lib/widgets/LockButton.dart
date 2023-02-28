@@ -14,34 +14,43 @@ class LockButtonState extends State<LockButton> {
   FlutterBlue flutterBlue = FlutterBlue.instance;
 
   void _lockChange() {
+    if (!connected) {
+      setState(() {
+        connected = !connected;
+      });
+    } else {
+      setState(() {
+        locked = !locked;
+      });
+    }
     // setState(() {
     //   locked = !locked;
     // });
-    flutterBlue.startScan(timeout: Duration(seconds: 15));
-    bool foundDevice = false;
-    ScanResult foundResult;
+    // flutterBlue.startScan(timeout: Duration(seconds: 15));
+    // bool foundDevice = false;
+    // ScanResult foundResult;
 // Listen to scan results
-    var subscription = flutterBlue.scanResults.listen((results) {
-      // do something with scan results
-      if (foundDevice == false) {
-        for (ScanResult r in results) {
-          if (r.device.name.isNotEmpty) {
-            print(r.device.toString());
-          }
-          if (r.device.name == "LightBlue") {
-            flutterBlue.stopScan();
+    // var subscription = flutterBlue.scanResults.listen((results) {
+    //   // do something with scan results
+    //   if (foundDevice == false) {
+    //     for (ScanResult r in results) {
+    //       if (r.device.name.isNotEmpty) {
+    //         print(r.device.toString());
+    //       }
+    //       if (r.device.name == "LightBlue") {
+    //         flutterBlue.stopScan();
 
-            connect(r);
-          }
-        }
-      }
-    });
+    //         connect(r);
+    //       }
+    //     }
+    //   }
+    // });
   }
 
-  void connect(ScanResult foundDevice) async {
-    print("-------------------------------");
-    await foundDevice.device.connect();
-  }
+  // void connect(ScanResult foundDevice) async {
+  //   print("-------------------------------");
+  //   await foundDevice.device.connect();
+  // }
 
   List<Widget> buttonChild() {
     if (!connected) {

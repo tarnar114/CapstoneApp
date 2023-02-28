@@ -3,33 +3,55 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class AlarmCard extends StatefulWidget {
-  const AlarmCard(
-      {
-      // required this.time,
-      super.key});
-  // final String time;
+  const AlarmCard({required this.time, required this.Days, super.key});
+  final String time;
+  final List<String> Days;
   @override
   State<AlarmCard> createState() => _AlarmCardState();
 }
 
 class _AlarmCardState extends State<AlarmCard> {
   bool light = true;
+  List<TextSpan> textformat() {
+    List<TextSpan> alarmDays = List.filled(7, TextSpan(text: ""));
+    bool bold = false;
+    List<String> weekdays = ["S", "M", "T", "W", "T", "F", "S"];
+    for (var i = 0; i < widget.Days.length; i++) {
+      if (widget.Days[i] == "T") {
+        bold = true;
+      } else if (widget.Days[i] == "F") {
+        bold = false;
+      }
+
+      if (bold) {
+        alarmDays[i] = TextSpan(
+            text: weekdays[i],
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 14, color: Colors.blue));
+      } else {
+        alarmDays[i] = TextSpan(
+            text: weekdays[i],
+            style: TextStyle(fontSize: 14, color: Colors.grey));
+      }
+    }
+    return alarmDays;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          const Expanded(
+          Expanded(
               child: ListTile(
             leading: Icon(Icons.alarm),
             title: Text(
-              '9:15 a.m.',
+              widget.time,
               style: TextStyle(fontSize: 23),
             ),
-            subtitle: Text(
-              'S M T W T F S',
-              style: TextStyle(fontSize: 12),
+            subtitle: Text.rich(
+              TextSpan(children: textformat()),
             ),
           )),
           Container(

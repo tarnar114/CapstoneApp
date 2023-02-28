@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
+import 'package:capstone_app/data/Alert.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -16,10 +19,25 @@ class AlertStorage {
     return File('$path/alarms.txt');
   }
 
-  // Future<File> writeAlert(String time, List<bool> AlertDays) async {
-  //   final file = await _localFile;
+  Future<String> readAlerts() async {
+    try {
+      const splitter = LineSplitter();
+      final file = await _localFile;
+      final contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      print(e.toString());
+      return "";
+    }
+  }
 
-  //   // Write the file
-  //   return file.writeAsString(time + " "+);
-  // }
+  Future<void> writeAlert(String timeInput, List<String> AlertDays) async {
+    final file = await _localFile;
+    Map<String, dynamic> map1 = {"time": timeInput, "AlertDays": AlertDays};
+    var alert = AlertClass.fromJson(map1);
+    String json = jsonEncode(alert);
+    // Write the file
+    return file.writeAsStringSync(json + '\n',
+        mode: FileMode.append, flush: true);
+  }
 }

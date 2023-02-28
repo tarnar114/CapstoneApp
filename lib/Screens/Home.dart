@@ -6,7 +6,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import '../widgets/CustAppBar.dart';
 import '../widgets/CustDrawer.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 
 import '../widgets/LockButton.dart';
 
@@ -22,17 +21,8 @@ class _HomeState extends State<Home> {
   bool connected = false;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: CustAppBar(),
-        drawer: CustDrawer(),
-        body: Column(
-          children: [
-            LockButton(
-              callback: _callback,
-            ),
-          ],
-        ),
-      );
+  Widget build(BuildContext context) =>
+      Column(children: [LockButton(callback: _callback)]);
   void _callback() {
     setState(() {
       if (!connected) {

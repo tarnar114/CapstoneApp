@@ -14,7 +14,7 @@ class CustDrawer extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.blue,
           ),
-          child: Text('Drawer Header'),
+          child: Text(''),
         ),
         ListTile(
           leading: const Icon(
@@ -22,7 +22,9 @@ class CustDrawer extends StatelessWidget {
           ),
           title: Text('Home'),
           onTap: () {
-            context.go('/');
+            GoRouter.of(context).go('/');
+
+            Navigator.pop(context);
           },
         ),
         ListTile(
@@ -31,15 +33,20 @@ class CustDrawer extends StatelessWidget {
           ),
           title: const Text('Sessions'),
           onTap: () {
-            context.go('/alerts');
+            GoRouter.of(context).go('/alerts');
+            Navigator.pop(context);
           },
         ),
         ListTile(
           leading: Icon(
-            Icons.settings,
+            Icons.map,
           ),
-          title: const Text('Settings'),
-          onTap: () {},
+          title: const Text('Map'),
+          onTap: () {
+            Navigator.pop(context);
+
+            GoRouter.of(context).go('/map');
+          },
         )
       ],
     ));
