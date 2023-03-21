@@ -42,12 +42,12 @@ dependencies:
   weekday_selector: ^1.1.0
   path_provider: ^2.0.11
   intl: ^0.17.0
-  flutter_blue: ^0.8.0
-  flutter_reactive_ble: ^5.0.2
   location: ^4.4.0
   google_maps_flutter: ^2.2.1
   shared_preferences: ^2.0.18
-
+  provider: ^6.0.5
+  flutter_reactive_ble: ^5.0.3
+  
 
 dev_dependencies:
   flutter_test:
