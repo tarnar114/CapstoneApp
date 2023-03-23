@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:location/location.dart';
@@ -28,17 +27,24 @@ class LockButtonState extends State<LockButton> {
   Location location = Location();
 
   void _lockChange() {
-    setState(() {
-      locked = !locked;
-    });
+    if (connected) {
+      setState(() {
+        locked = !locked;
+      });
+    }
   }
-  void _connectToDevice(){
+
+  void _connectToDevice() {
     _scanStream.cancel();
 
-    Stream<ConnectionStateUpdate> _currConnectStream=_ble.connectToAdvertisingDevice(id: _uniqueDevice.id, withServices: [serviceUuid,charUuid], prescanDuration: const Duration(seconds: 5));
+    Stream<ConnectionStateUpdate> _currConnectStream =
+        _ble.connectToAdvertisingDevice(
+            id: _uniqueDevice.id,
+            withServices: [serviceUuid, charUuid],
+            prescanDuration: const Duration(seconds: 5));
     _currConnectStream.listen((event) {
-      switch (event.connectionState){
-         case DeviceConnectionState.connected:
+      switch (event.connectionState) {
+        case DeviceConnectionState.connected:
           {
             _rxChar = QualifiedCharacteristic(
                 serviceId: serviceUuid,
@@ -53,20 +59,25 @@ class LockButtonState extends State<LockButton> {
         // Can add various state state updates on disconnect
         case DeviceConnectionState.disconnected:
           {
+            setState(() {
+              connected = false;
+            });
             break;
           }
         default:
       }
     });
   }
+
   void startScan() async {
     bool permGranted = false;
     setState(() {
       scanStarted = true;
     });
     PermissionStatus _permissionGranted;
-
+    print("scan started");
     _permissionGranted = await location.hasPermission();
+    print(_permissionGranted.name);
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
@@ -74,20 +85,23 @@ class LockButtonState extends State<LockButton> {
           permGranted = false;
         });
         return;
-      } else {
-        permGranted = true;
       }
+    } else {
+      permGranted = true;
     }
 
-    if (permGranted)  {
-      _scanStream=_ble.scanForDevices(withServices: [serviceUuid]).listen((device){
-        if (device.name=="UBIQUE"){
-          setState(() {
-            _uniqueDevice=device;
-            _foundDeviceWaitingToConnect=true;
-          });
+    if (permGranted) {
+      _scanStream = _ble.scanForDevices(withServices: []).listen((device) {
+        // if (device.name == "UBIQUE") {
+        //   setState(() {
+        //     _uniqueDevice = device;
+        //     _foundDeviceWaitingToConnect = true;
+        //   });
+        // }
+        if (device.name.isNotEmpty) {
+          print(device.name.toString());
         }
-      })
+      });
     }
   }
 
@@ -96,10 +110,18 @@ class LockButtonState extends State<LockButton> {
     if (!connected) {
       return [
         Icon(
-          Icons.wifi,
+          Icons.bluetooth,
           size: 50,
         ),
         Text("connect")
+      ];
+    } else if (scanStarted) {
+      return [
+        Icon(
+          Icons.bluetooth_searching,
+          size: 50,
+        ),
+        Text("Searching")
       ];
     } else {
       if (locked) {
@@ -139,7 +161,13 @@ class LockButtonState extends State<LockButton> {
             child: ElevatedButton(
               style: style,
               onPressed: () {
-                _lockChange();
+                if (!_foundDeviceWaitingToConnect) {
+                  startScan();
+                } else if (_foundDeviceWaitingToConnect) {
+                  _connectToDevice();
+                } else if (connected) {
+                  _lockChange();
+                }
               },
               child: Center(
                 child: Column(children: buttonChild()),

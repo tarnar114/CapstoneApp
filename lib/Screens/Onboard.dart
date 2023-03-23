@@ -1,5 +1,6 @@
 import 'package:capstone_app/widgets/CustAppBar.dart';
 import 'package:flutter/material.dart';
+import '../misc/themes.dart';
 
 class Onboard extends StatefulWidget {
   const Onboard({Key? key}) : super(key: key);
