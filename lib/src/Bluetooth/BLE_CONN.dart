@@ -110,23 +110,17 @@ class LockButtonState extends State<LockButton> {
                 } else if (state.Connected) {
                   print("sending msg");
                   if (lockState == true) {
-                    _ble.writeCharacteristicWithoutResponse(
-                        QualifiedCharacteristic(
-                            characteristicId: state.charUuid,
-                            serviceId: state.serviceUuid,
-                            deviceId: state.deviceId!),
-                        value: [1]);
+                    context
+                        .read<BleBloc>()
+                        .add(WriteCharacteristicEvent([0x01]));
                     print("written 1");
                     setState(() {
                       lockState = false;
                     });
                   } else if (lockState == false) {
-                    _ble.writeCharacteristicWithoutResponse(
-                        QualifiedCharacteristic(
-                            characteristicId: state.charUuid,
-                            serviceId: state.serviceUuid,
-                            deviceId: state.deviceId!),
-                        value: [0]);
+                    context
+                        .read<BleBloc>()
+                        .add(WriteCharacteristicEvent([0x01]));
                     print("written 0");
                     setState(() {
                       lockState = true;

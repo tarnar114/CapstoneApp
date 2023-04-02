@@ -10,6 +10,8 @@ import 'package:capstone_app/src/Bluetooth/bloc/BLE_event.dart';
 class BleBloc extends Bloc<BleEvent, BleState> {
   final FlutterReactiveBle _ble = FlutterReactiveBle();
   late StreamSubscription<DiscoveredDevice> _scanStream;
+  late Stream<ConnectionStateUpdate> _currConnectStream;
+  late StreamSubscription<ConnectionStateUpdate> _currConnectSub;
   BleBloc() : super(BleState.initial()) {
     on<Scanning>(scanEvent);
     on<ConnectToDeviceEvent>(connectEvent);
@@ -18,6 +20,8 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     on<WriteCharacteristicEvent>(writeEvent);
     on<Disconnect>(disconnectEvent);
     on<DeviceConnected>(connectedDevice);
+    _scanStream;
+    _currConnectSub;
   }
   Future<void> disconnectEvent(Disconnect event, Emitter<BleState> emit) async {
     _ble.deinitialize();
@@ -40,8 +44,11 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     try {
       print("rxChar:" + state.rxChar.toString());
       if (state.rxChar != null) {
-        _ble.writeCharacteristicWithoutResponse(state.rxChar!,
-            value: event.value);
+        _ble
+            .writeCharacteristicWithoutResponse(state.rxChar!,
+                value: event.value)
+            .onError(
+                (error, stackTrace) => print("error: " + error.toString()));
       }
     } catch (e) {
       print("write err: " + e.toString());
@@ -64,16 +71,15 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     print("bloc connecting");
     if (state.uniqueDevice != null) {
       state.copyWith(Connecting: true);
-      Stream<ConnectionStateUpdate> _currConnectStream =
-          _ble.connectToAdvertisingDevice(
-              id: state.uniqueDevice!.id,
-              withServices: [state.serviceUuid, state.charUuid],
-              prescanDuration: const Duration(seconds: 1));
-      _currConnectStream.listen((event) {
+      _currConnectStream = _ble.connectToAdvertisingDevice(
+          id: state.uniqueDevice!.id,
+          withServices: [state.serviceUuid, state.charUuid],
+          prescanDuration: const Duration(seconds: 1));
+      _currConnectSub = _currConnectStream.listen((event) {
         switch (event.connectionState) {
           case DeviceConnectionState.connected:
             {
-              print("connected");
+              print("-----connected-----");
               add(DeviceConnected(event));
               // _ble.writeCharacteristicWithoutResponse(
               //     QualifiedCharacteristic(
@@ -86,10 +92,21 @@ class BleBloc extends Bloc<BleEvent, BleState> {
           // Can add various state state updates on disconnect
           case DeviceConnectionState.disconnected:
             {
-              print("disconnected");
+              print("-----disconnected-----");
               add(DeviceConnected(event));
               break;
             }
+          case DeviceConnectionState.connecting:
+            {
+              print("------connecting----");
+              break;
+            }
+          case DeviceConnectionState.disconnecting:
+            {
+              print("------disconnecting----");
+              break;
+            }
+
           default:
         }
       }, onError: (dynamic error) {
