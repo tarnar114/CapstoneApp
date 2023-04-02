@@ -67,7 +67,7 @@ class LockButtonState extends State<LockButton> {
 
   List<Widget> Unlocked = [
     Icon(
-      Icons.wifi_2_bar_sharp,
+      Icons.lock_open,
       size: 50,
     ),
     Text("Unlock")

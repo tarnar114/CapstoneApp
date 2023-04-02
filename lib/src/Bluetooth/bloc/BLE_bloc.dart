@@ -33,6 +33,9 @@ class BleBloc extends Bloc<BleEvent, BleState> {
 
   void writeEvent(WriteCharacteristicEvent event, Emitter<BleState> emit) {
     print("writing to arduino");
+    if (state.rxChar == null) {
+      print("rxChar is null");
+    }
     try {
       _ble.writeCharacteristicWithoutResponse(state.rxChar!,
           value: event.value);
@@ -79,7 +82,6 @@ class BleBloc extends Bloc<BleEvent, BleState> {
             {
               print("disconnected");
               add(DeviceConnected(event));
-              _ble.deinitialize();
               break;
             }
           default:
