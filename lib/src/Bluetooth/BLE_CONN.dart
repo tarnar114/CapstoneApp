@@ -92,34 +92,24 @@ class LockButtonState extends State<LockButton> {
         child: Column(children: <Widget>[
       Container(
         margin: EdgeInsets.only(top: 25),
-        child: BlocConsumer<BleBloc, BleState>(
-            listenWhen: (previousState, state) {
-              return state.Scanning != previousState.Scanning ||
-                  state.Connecting != previousState.Connecting ||
-                  state.Connected != previousState.Connected;
-            },
-            listener: (context, state) {},
-            builder: (context, state) {
-              return ElevatedButton(
-                  style: style,
-                  onPressed: () {
-                    if (!state.Scanning && state.uniqueDevice == null) {
-                      print("Scanning and Connecting");
-                      context.read<BleBloc>().add(Scanning());
-                    } else if (state.Connected == true) {
-                      if (lockState == true) {
-                        context
-                            .read<BleBloc>()
-                            .add(WriteCharacteristicEvent([0]));
-                      } else {
-                        context
-                            .read<BleBloc>()
-                            .add(WriteCharacteristicEvent([1]));
-                      }
-                    }
-                  },
-                  child: Center(child: Column(children: getChild(state))));
-            }),
+        child: BlocBuilder<BleBloc, BleState>(builder: (context, state) {
+          return ElevatedButton(
+              style: style,
+              onPressed: () {
+                if (!state.Scanning && state.uniqueDevice == null) {
+                  print("Scanning and Connecting");
+                  context.read<BleBloc>().add(Scanning());
+                } else if (state.Connected == true) {
+                  print("sending msg");
+                  if (lockState == true) {
+                    context.read<BleBloc>().add(WriteCharacteristicEvent([0]));
+                  } else {
+                    context.read<BleBloc>().add(WriteCharacteristicEvent([1]));
+                  }
+                }
+              },
+              child: Center(child: Column(children: getChild(state))));
+        }),
       ),
     ]));
   }
