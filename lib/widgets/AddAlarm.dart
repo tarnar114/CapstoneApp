@@ -18,7 +18,7 @@ class _MyWidgetState extends State<AddAlarm> {
     return Container(
         child: ElevatedButton(
             onPressed: () {
-              context.go('/add_alert');
+              GoRouter.of(context).go('/add_alert');
             },
             style: style,
             child: Center(

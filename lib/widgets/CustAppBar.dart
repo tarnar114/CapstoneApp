@@ -13,7 +13,7 @@ class _CustAppBarState extends State<CustAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.blue,
+      backgroundColor: Theme.of(context).primaryColor,
       automaticallyImplyLeading: true,
       title: Text(widget.title),
     );
