@@ -92,7 +92,15 @@ class LockButtonState extends State<LockButton> {
         child: Column(children: <Widget>[
       Container(
         margin: EdgeInsets.only(top: 25),
-        child: BlocBuilder<BleBloc, BleState>(builder: (context, state) {
+        child: BlocBuilder<BleBloc, BleState>(buildWhen: (previous, current) {
+          if (previous.Connected != current.Connected) {
+            return true;
+          } else if (previous.Scanning != current.Scanning) {
+            return true;
+          } else {
+            return false;
+          }
+        }, builder: (context, state) {
           return ElevatedButton(
               style: style,
               onPressed: () {
