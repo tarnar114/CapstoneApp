@@ -43,7 +43,7 @@ class BleBloc extends Bloc<BleEvent, BleState> {
       print("rxChar:" + state.rxChar.toString());
       if (state.rxChar != null) {
         try {
-          await _ble.writeCharacteristicWithoutResponse(state.rxChar!,
+          await _ble.writeCharacteristicWithResponse(state.rxChar!,
               value: event.value);
         } catch (e) {
           print(e.toString());
