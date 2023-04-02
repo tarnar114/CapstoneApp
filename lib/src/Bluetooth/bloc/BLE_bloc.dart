@@ -31,8 +31,9 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     });
   }
 
-  Future<void> writeEvent(
+  void writeEvent(
       WriteCharacteristicEvent event, Emitter<BleState> emit) async {
+    print("writing to arduino");
     _ble.writeCharacteristicWithoutResponse(state.rxChar!, value: event.value);
   }
 
