@@ -20,8 +20,6 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     on<WriteCharacteristicEvent>(writeEvent);
     on<Disconnect>(disconnectEvent);
     on<DeviceConnected>(connectedDevice);
-    _scanStream;
-    _currConnectSub;
   }
   Future<void> disconnectEvent(Disconnect event, Emitter<BleState> emit) async {
     _ble.deinitialize();
