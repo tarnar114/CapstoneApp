@@ -19,10 +19,10 @@ class ScanFoundDevice extends BleEvent {
   ScanFoundDevice(this.device);
 }
 
-class ReadCharacteristicEvent extends BleEvent {
+class BleSubscribe extends BleEvent {
   final QualifiedCharacteristic characteristic;
 
-  ReadCharacteristicEvent(this.characteristic);
+  BleSubscribe(this.characteristic);
 }
 
 class WriteCharacteristicEvent extends BleEvent {

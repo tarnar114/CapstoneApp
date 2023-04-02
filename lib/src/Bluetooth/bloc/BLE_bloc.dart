@@ -15,7 +15,7 @@ class BleBloc extends Bloc<BleEvent, BleState> {
   BleBloc() : super(BleState.initial()) {
     on<Scanning>(scanEvent);
     on<ConnectToDeviceEvent>(connectEvent);
-    on<ReadCharacteristicEvent>(readEvent);
+    on<BleSubscribe>(subEvent);
     on<ScanFoundDevice>(foundDevice);
     on<WriteCharacteristicEvent>(writeEvent);
     on<Disconnect>(disconnectEvent);
@@ -26,10 +26,9 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     emit(BleState.initial());
   }
 
-  Future<void> readEvent(
-      ReadCharacteristicEvent event, Emitter<BleState> emit) async {
+  Future<void> subEvent(BleSubscribe event, Emitter<BleState> emit) async {
     _ble.subscribeToCharacteristic(event.characteristic).listen((event) {
-      print(event.toString());
+      print("notifications:" + event.toString());
     });
   }
 
@@ -80,6 +79,7 @@ class BleBloc extends Bloc<BleEvent, BleState> {
             {
               print("-----connected-----");
               add(DeviceConnected(event));
+              add(BleSubscribe(state.rxChar!));
               // _ble.writeCharacteristicWithoutResponse(
               //     QualifiedCharacteristic(
               //         serviceId: state.serviceUuid,
