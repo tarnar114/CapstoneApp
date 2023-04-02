@@ -17,6 +17,7 @@ class LockButton extends StatefulWidget {
 
 class LockButtonState extends State<LockButton> {
   bool lockState = true;
+  final FlutterReactiveBle _ble = FlutterReactiveBle();
 
   List<Widget> getChild(BleState state) {
     if (state.Scanning) {
@@ -109,13 +110,23 @@ class LockButtonState extends State<LockButton> {
                 } else if (state.Connected) {
                   print("sending msg");
                   if (lockState == true) {
-                    context.read<BleBloc>().add(WriteCharacteristicEvent([1]));
+                    _ble.writeCharacteristicWithoutResponse(
+                        QualifiedCharacteristic(
+                            characteristicId: state.charUuid,
+                            serviceId: state.serviceUuid,
+                            deviceId: state.deviceId!),
+                        value: [1]);
                     print("written 1");
                     setState(() {
                       lockState = false;
                     });
                   } else if (lockState == false) {
-                    context.read<BleBloc>().add(WriteCharacteristicEvent([0]));
+                    _ble.writeCharacteristicWithoutResponse(
+                        QualifiedCharacteristic(
+                            characteristicId: state.charUuid,
+                            serviceId: state.serviceUuid,
+                            deviceId: state.deviceId!),
+                        value: [0]);
                     print("written 0");
                     setState(() {
                       lockState = true;

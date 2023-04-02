@@ -55,6 +55,7 @@ class BleBloc extends Bloc<BleEvent, BleState> {
               serviceId: state.serviceUuid,
               characteristicId: state.charUuid,
               deviceId: event.update.deviceId),
+          deviceId: event.update.deviceId,
           Connected: true));
     }
   }

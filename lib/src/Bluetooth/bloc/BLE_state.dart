@@ -7,6 +7,7 @@ class BleState {
   late QualifiedCharacteristic? rxChar;
   final Uuid serviceUuid, charUuid;
   final List<int>? arduinoRes;
+  late String? deviceId;
   BleState(
       {required this.Scanning,
       required this.Connecting,
@@ -14,18 +15,19 @@ class BleState {
       this.uniqueDevice,
       this.rxChar,
       this.arduinoRes,
+      this.deviceId,
       required this.serviceUuid,
       required this.charUuid});
   factory BleState.initial() {
     return BleState(
-      Scanning: false,
-      Connecting: false,
-      Connected: false,
-      serviceUuid: Uuid.parse("180A"),
-      charUuid: Uuid.parse("2A57"),
-      uniqueDevice: null,
-      rxChar: null,
-    );
+        Scanning: false,
+        Connecting: false,
+        Connected: false,
+        serviceUuid: Uuid.parse("180A"),
+        charUuid: Uuid.parse("2A57"),
+        uniqueDevice: null,
+        rxChar: null,
+        deviceId: "");
   }
   BleState copyWith(
       {bool? Scanning,
@@ -36,6 +38,7 @@ class BleState {
       QualifiedCharacteristic? rxChar,
       Uuid? serviceUuid,
       Uuid? charUuid,
+      String? deviceId,
       List<int>? arduinoRes}) {
     return BleState(
         Scanning: Scanning ?? this.Scanning,
@@ -45,6 +48,7 @@ class BleState {
         rxChar: rxChar ?? this.rxChar,
         serviceUuid: serviceUuid ?? this.serviceUuid,
         charUuid: charUuid ?? this.charUuid,
-        arduinoRes: arduinoRes ?? this.arduinoRes);
+        arduinoRes: arduinoRes ?? this.arduinoRes,
+        deviceId: deviceId ?? this.deviceId);
   }
 }
