@@ -39,8 +39,10 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     }
     try {
       print("rxChar:" + state.rxChar.toString());
-      _ble.writeCharacteristicWithoutResponse(state.rxChar!,
-          value: event.value);
+      if (state.rxChar != null) {
+        _ble.writeCharacteristicWithoutResponse(state.rxChar!,
+            value: event.value);
+      }
     } catch (e) {
       print("write err: " + e.toString());
     }
@@ -54,11 +56,6 @@ class BleBloc extends Bloc<BleEvent, BleState> {
               characteristicId: state.charUuid,
               deviceId: event.update.deviceId),
           Connected: true));
-    } else if (event.update.connectionState ==
-        DeviceConnectionState.connecting) {
-      emit(state.copyWith(Connected: false, Connecting: true));
-    } else {
-      emit(state.copyWith(Connected: false, Connecting: false));
     }
   }
 
@@ -77,12 +74,12 @@ class BleBloc extends Bloc<BleEvent, BleState> {
             {
               print("connected");
               add(DeviceConnected(event));
-              _ble.writeCharacteristicWithoutResponse(
-                  QualifiedCharacteristic(
-                      serviceId: state.serviceUuid,
-                      characteristicId: state.charUuid,
-                      deviceId: event.deviceId),
-                  value: [1]);
+              // _ble.writeCharacteristicWithoutResponse(
+              //     QualifiedCharacteristic(
+              //         serviceId: state.serviceUuid,
+              //         characteristicId: state.charUuid,
+              //         deviceId: event.deviceId),
+              //     value: [1]);
               break;
             }
           // Can add various state state updates on disconnect

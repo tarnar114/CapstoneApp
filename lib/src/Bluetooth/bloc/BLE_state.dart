@@ -4,7 +4,7 @@ import 'dart:async';
 class BleState {
   final bool Scanning, Connecting, Connected;
   late DiscoveredDevice? uniqueDevice;
-  final QualifiedCharacteristic? rxChar;
+  late QualifiedCharacteristic? rxChar;
   final Uuid serviceUuid, charUuid;
   final List<int>? arduinoRes;
   BleState(
