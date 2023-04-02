@@ -16,11 +16,18 @@ class LockButton extends StatefulWidget {
 }
 
 class LockButtonState extends State<LockButton> {
+  bool lockState = true;
   List<Widget> getChild(BleState state) {
     if (state.Scanning) {
       return scanning;
     } else if (state.Connecting) {
       return Connecting;
+    } else if (state.Connected) {
+      if (lockState == true) {
+        return Locked;
+      } else {
+        return Unlocked;
+      }
     } else {
       return disconnected;
     }
@@ -43,6 +50,22 @@ class LockButtonState extends State<LockButton> {
   ];
 
   List<Widget> scanning = [
+    Icon(
+      Icons.wifi_2_bar_sharp,
+      size: 50,
+    ),
+    Text("Scanning")
+  ];
+
+  List<Widget> Locked = [
+    Icon(
+      Icons.lock,
+      size: 50,
+    ),
+    Text("Scanning")
+  ];
+
+  List<Widget> Unlocked = [
     Icon(
       Icons.wifi_2_bar_sharp,
       size: 50,
@@ -86,6 +109,17 @@ class LockButtonState extends State<LockButton> {
                     } else if (state.uniqueDevice != null) {
                       print("connecting");
                       context.read<BleBloc>().add(ConnectToDeviceEvent());
+                    }
+                    if (state.Connected == true) {
+                      if (lockState == true) {
+                        context
+                            .read<BleBloc>()
+                            .add(WriteCharacteristicEvent([0]));
+                      } else {
+                        context
+                            .read<BleBloc>()
+                            .add(WriteCharacteristicEvent([1]));
+                      }
                     }
                   },
                   child: Center(child: Column(children: getChild(state))));

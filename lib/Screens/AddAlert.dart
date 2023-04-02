@@ -78,12 +78,15 @@ class _AddAlertState extends State<AddAlert> {
               String currTimeString = DateFormat.jm().format(currTime);
               var currTimeEncoded = utf8.encode(currTimeString);
               var futureTimeEncoded = utf8.encode(futureTime);
-              context
-                  .read<BleBloc>()
-                  .add(WriteCharacteristicEvent(currTimeEncoded));
-              context
-                  .read<BleBloc>()
-                  .add(WriteCharacteristicEvent(futureTimeEncoded));
+              if (context.read<BleBloc>().state.Connected) {
+                context
+                    .read<BleBloc>()
+                    .add(WriteCharacteristicEvent(currTimeEncoded));
+                context
+                    .read<BleBloc>()
+                    .add(WriteCharacteristicEvent(futureTimeEncoded));
+              }
+
               context.go('/alerts');
             },
             child: Text("save")),
