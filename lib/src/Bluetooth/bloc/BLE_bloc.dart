@@ -31,13 +31,15 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     });
   }
 
-  void writeEvent(WriteCharacteristicEvent event, Emitter<BleState> emit) {
+  void writeEvent(
+      WriteCharacteristicEvent event, Emitter<BleState> emit) async {
     print("writing to arduino");
     if (state.rxChar == null) {
       print("rxChar is null");
     }
     try {
-      final res = _ble.writeCharacteristicWithResponse(state.rxChar!,
+      print("rxChar:" + state.rxChar.toString());
+      _ble.writeCharacteristicWithoutResponse(state.rxChar!,
           value: event.value);
     } catch (e) {
       print("write err: " + e.toString());

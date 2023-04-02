@@ -101,14 +101,16 @@ class LockButtonState extends State<LockButton> {
                   context.read<BleBloc>().add(Scanning());
                 } else if (state.Connected) {
                   print("sending msg");
-                  if (lockState == true) {
-                    context
-                        .read<BleBloc>()
-                        .add(WriteCharacteristicEvent([0x01]));
+                  if (lockState) {
+                    context.read<BleBloc>().add(WriteCharacteristicEvent([1]));
+                    setState(() {
+                      lockState = !lockState;
+                    });
                   } else {
-                    context
-                        .read<BleBloc>()
-                        .add(WriteCharacteristicEvent([0x02]));
+                    context.read<BleBloc>().add(WriteCharacteristicEvent([0]));
+                    setState(() {
+                      lockState = !lockState;
+                    });
                   }
                 }
               },
