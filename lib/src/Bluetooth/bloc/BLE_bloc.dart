@@ -42,11 +42,12 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     try {
       print("rxChar:" + state.rxChar.toString());
       if (state.rxChar != null) {
-        _ble
-            .writeCharacteristicWithoutResponse(state.rxChar!,
-                value: event.value)
-            .onError(
-                (error, stackTrace) => print("error: " + error.toString()));
+        try {
+          await _ble.writeCharacteristicWithoutResponse(state.rxChar!,
+              value: event.value);
+        } catch (e) {
+          print(e.toString());
+        }
       }
     } catch (e) {
       print("write err: " + e.toString());
@@ -138,7 +139,9 @@ class BleBloc extends Bloc<BleEvent, BleState> {
       permGranted = true;
     }
     if (permGranted) {
-      _scanStream = _ble.scanForDevices(withServices: []).listen((event) {
+      _scanStream = _ble.scanForDevices(
+          withServices: [state.serviceUuid],
+          scanMode: ScanMode.lowLatency).listen((event) {
         if (event.name.isNotEmpty) {
           print(event.name);
           add(ScanFoundDevice(event));
