@@ -17,6 +17,7 @@ class LockButton extends StatefulWidget {
 
 class LockButtonState extends State<LockButton> {
   bool lockState = true;
+
   List<Widget> getChild(BleState state) {
     if (state.Scanning) {
       return scanning;
@@ -92,7 +93,13 @@ class LockButtonState extends State<LockButton> {
         child: Column(children: <Widget>[
       Container(
         margin: EdgeInsets.only(top: 25),
-        child: BlocBuilder<BleBloc, BleState>(builder: (context, state) {
+        child: BlocBuilder<BleBloc, BleState>(buildWhen: ((previous, current) {
+          if (previous != current) {
+            return true;
+          } else {
+            return false;
+          }
+        }), builder: (context, state) {
           return ElevatedButton(
               style: style,
               onPressed: () {
@@ -101,15 +108,15 @@ class LockButtonState extends State<LockButton> {
                   context.read<BleBloc>().add(Scanning());
                 } else if (state.Connected) {
                   print("sending msg");
-                  if (lockState) {
-                    context.read<BleBloc>().add(WriteCharacteristicEvent([1]));
+                  if (lockState == true) {
+                    context.read<BleBloc>().add(WriteCharacteristicEvent([01]));
                     setState(() {
-                      lockState = !lockState;
+                      lockState = false;
                     });
-                  } else {
-                    context.read<BleBloc>().add(WriteCharacteristicEvent([0]));
+                  } else if (lockState == false) {
+                    context.read<BleBloc>().add(WriteCharacteristicEvent([00]));
                     setState(() {
-                      lockState = !lockState;
+                      lockState = true;
                     });
                   }
                 }
