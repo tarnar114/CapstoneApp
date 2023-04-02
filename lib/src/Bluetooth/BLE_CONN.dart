@@ -62,7 +62,7 @@ class LockButtonState extends State<LockButton> {
       Icons.lock,
       size: 50,
     ),
-    Text("Scanning")
+    Text("Lock")
   ];
 
   List<Widget> Unlocked = [
@@ -70,7 +70,7 @@ class LockButtonState extends State<LockButton> {
       Icons.wifi_2_bar_sharp,
       size: 50,
     ),
-    Text("Scanning")
+    Text("Unlock")
   ];
 
   @override
@@ -92,27 +92,23 @@ class LockButtonState extends State<LockButton> {
         child: Column(children: <Widget>[
       Container(
         margin: EdgeInsets.only(top: 25),
-        child: BlocBuilder<BleBloc, BleState>(buildWhen: (previous, current) {
-          if (previous.Connected != current.Connected) {
-            return true;
-          } else if (previous.Scanning != current.Scanning) {
-            return true;
-          } else {
-            return false;
-          }
-        }, builder: (context, state) {
+        child: BlocBuilder<BleBloc, BleState>(builder: (context, state) {
           return ElevatedButton(
               style: style,
               onPressed: () {
                 if (!state.Scanning && state.uniqueDevice == null) {
                   print("Scanning and Connecting");
                   context.read<BleBloc>().add(Scanning());
-                } else if (state.Connected == true) {
+                } else if (state.Connected) {
                   print("sending msg");
                   if (lockState == true) {
-                    context.read<BleBloc>().add(WriteCharacteristicEvent([0]));
+                    context
+                        .read<BleBloc>()
+                        .add(WriteCharacteristicEvent([0x00]));
                   } else {
-                    context.read<BleBloc>().add(WriteCharacteristicEvent([1]));
+                    context
+                        .read<BleBloc>()
+                        .add(WriteCharacteristicEvent([0x01]));
                   }
                 }
               },

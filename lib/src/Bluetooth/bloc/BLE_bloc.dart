@@ -31,10 +31,14 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     });
   }
 
-  void writeEvent(
-      WriteCharacteristicEvent event, Emitter<BleState> emit) async {
+  void writeEvent(WriteCharacteristicEvent event, Emitter<BleState> emit) {
     print("writing to arduino");
-    _ble.writeCharacteristicWithoutResponse(state.rxChar!, value: event.value);
+    try {
+      _ble.writeCharacteristicWithoutResponse(state.rxChar!,
+          value: event.value);
+    } catch (e) {
+      print("write err: " + e.toString());
+    }
   }
 
   void connectedDevice(DeviceConnected event, Emitter<BleState> emit) {
@@ -121,7 +125,7 @@ class BleBloc extends Bloc<BleEvent, BleState> {
   }
 
   void foundDevice(ScanFoundDevice event, Emitter<BleState> emit) {
-    if (event.device.name == "Galaxy A12") {
+    if (event.device.name == "Nano 33 BLE Sense") {
       print("connected");
       emit(state.copyWith(Scanning: false, uniqueDevice: event.device));
       _scanStream.cancel();
