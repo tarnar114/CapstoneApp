@@ -104,11 +104,11 @@ class LockButtonState extends State<LockButton> {
                   if (lockState == true) {
                     context
                         .read<BleBloc>()
-                        .add(WriteCharacteristicEvent([0x00]));
+                        .add(WriteCharacteristicEvent([0x01]));
                   } else {
                     context
                         .read<BleBloc>()
-                        .add(WriteCharacteristicEvent([0x01]));
+                        .add(WriteCharacteristicEvent([0x02]));
                   }
                 }
               },

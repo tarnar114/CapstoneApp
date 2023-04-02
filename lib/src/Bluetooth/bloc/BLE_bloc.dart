@@ -37,7 +37,7 @@ class BleBloc extends Bloc<BleEvent, BleState> {
       print("rxChar is null");
     }
     try {
-      _ble.writeCharacteristicWithoutResponse(state.rxChar!,
+      final res = _ble.writeCharacteristicWithResponse(state.rxChar!,
           value: event.value);
     } catch (e) {
       print("write err: " + e.toString());
@@ -75,6 +75,12 @@ class BleBloc extends Bloc<BleEvent, BleState> {
             {
               print("connected");
               add(DeviceConnected(event));
+              _ble.writeCharacteristicWithoutResponse(
+                  QualifiedCharacteristic(
+                      serviceId: state.serviceUuid,
+                      characteristicId: state.charUuid,
+                      deviceId: event.deviceId),
+                  value: [1]);
               break;
             }
           // Can add various state state updates on disconnect
