@@ -29,6 +29,8 @@ class BleBloc extends Bloc<BleEvent, BleState> {
   Future<void> subEvent(BleSubscribe event, Emitter<BleState> emit) async {
     _ble.subscribeToCharacteristic(event.characteristic).listen((event) {
       print("notifications:" + event.toString());
+    }).onError((error) {
+      print("error msg:" + error.toString());
     });
   }
 
