@@ -104,13 +104,9 @@ class LockButtonState extends State<LockButton> {
                   style: style,
                   onPressed: () {
                     if (!state.Scanning && state.uniqueDevice == null) {
-                      print("scanning");
+                      print("Scanning and Connecting");
                       context.read<BleBloc>().add(Scanning());
-                    } else if (state.uniqueDevice != null) {
-                      print("connecting");
-                      context.read<BleBloc>().add(ConnectToDeviceEvent());
-                    }
-                    if (state.Connected == true) {
+                    } else if (state.Connected == true) {
                       if (lockState == true) {
                         context
                             .read<BleBloc>()
