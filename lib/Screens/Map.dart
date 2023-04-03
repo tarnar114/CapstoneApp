@@ -65,7 +65,7 @@ class _MapState extends State<Map> {
       setState(() {
         loading = false;
       });
-      print("gps data non empty")
+      print("gps data non empty");
     } else {
       print("gps data empty");
     }
