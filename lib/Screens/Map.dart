@@ -73,11 +73,21 @@ class _MapState extends State<Map> {
       ));
     } else {
       return GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _currentPosition,
-            zoom: 15.0,
-          ));
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: _currentPosition,
+          zoom: 15.0,
+        ),
+        markers: Set<Marker>.of([
+          Marker(
+            markerId: MarkerId('marker_id'),
+            position: _currentPosition,
+            infoWindow: InfoWindow(
+              title: 'Bike Current Location',
+            ),
+          )
+        ]),
+      );
     }
   }
 }
