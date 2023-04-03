@@ -30,6 +30,7 @@ class BleBloc extends Bloc<BleEvent, BleState> {
 
   Future<void> readEvent(BleReadEvent event, Emitter<BleState> emit) async {
     final res = await _ble.readCharacteristic(state.rxChar!);
+
     add(BleReadResponse(res));
   }
 
