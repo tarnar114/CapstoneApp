@@ -25,6 +25,13 @@ class BleSubscribe extends BleEvent {
   BleSubscribe(this.characteristic);
 }
 
+class BleReadEvent extends BleEvent {}
+
+class BleReadResponse extends BleEvent {
+  final List<int> res;
+  BleReadResponse(this.res);
+}
+
 class WriteCharacteristicEvent extends BleEvent {
   final List<int> value;
 

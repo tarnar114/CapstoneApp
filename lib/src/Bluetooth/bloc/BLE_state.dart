@@ -6,7 +6,7 @@ class BleState {
   late DiscoveredDevice? uniqueDevice;
   late QualifiedCharacteristic? rxChar;
   final Uuid serviceUuid, charUuid;
-  final List<int>? arduinoRes;
+  final List<int> arduinoRes;
   late String? deviceId;
   BleState(
       {required this.Scanning,
@@ -14,7 +14,7 @@ class BleState {
       required this.Connected,
       this.uniqueDevice,
       this.rxChar,
-      this.arduinoRes,
+      required this.arduinoRes,
       this.deviceId,
       required this.serviceUuid,
       required this.charUuid});
@@ -23,6 +23,7 @@ class BleState {
         Scanning: false,
         Connecting: false,
         Connected: false,
+        arduinoRes: [],
         serviceUuid: Uuid.parse("180A"),
         charUuid: Uuid.parse("2A57"),
         uniqueDevice: null,

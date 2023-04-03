@@ -16,6 +16,8 @@ import './Screens/Home.dart';
 import './Screens/Alerts.dart';
 import './Screens/Map.dart';
 import 'package:capstone_app/src/BarcodeScan/Scan.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 // This scenario demonstrates a simple two-page app.
 //
@@ -29,7 +31,15 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'shell');
-void main() => runApp(App());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(App());
+}
 
 /// The main app.
 class App extends StatelessWidget {

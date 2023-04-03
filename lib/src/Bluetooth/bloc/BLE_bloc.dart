@@ -6,6 +6,7 @@ import 'package:capstone_app/src/Bluetooth/bloc/BLE_state.dart';
 import 'package:location/location.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:capstone_app/src/Bluetooth/bloc/BLE_event.dart';
+import 'dart:convert' show utf8;
 
 class BleBloc extends Bloc<BleEvent, BleState> {
   final FlutterReactiveBle _ble = FlutterReactiveBle();
@@ -20,7 +21,18 @@ class BleBloc extends Bloc<BleEvent, BleState> {
     on<WriteCharacteristicEvent>(writeEvent);
     on<Disconnect>(disconnectEvent);
     on<DeviceConnected>(connectedDevice);
+    on<BleReadEvent>(readEvent);
+    on<BleReadResponse>(getReadList);
   }
+  void getReadList(BleReadResponse event, Emitter<BleState> emit) {
+    emit(state.copyWith(arduinoRes: event.res));
+  }
+
+  Future<void> readEvent(BleReadEvent event, Emitter<BleState> emit) async {
+    final res = await _ble.readCharacteristic(state.rxChar!);
+    add(BleReadResponse(res));
+  }
+
   Future<void> disconnectEvent(Disconnect event, Emitter<BleState> emit) async {
     _ble.deinitialize();
     emit(BleState.initial());
