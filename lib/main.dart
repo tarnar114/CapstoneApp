@@ -18,6 +18,7 @@ import './Screens/Map.dart';
 import 'package:capstone_app/src/BarcodeScan/Scan.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // This scenario demonstrates a simple two-page app.
 //
@@ -37,8 +38,45 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  await init();
   runApp(App());
+}
+
+Future<void> init() async {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  //Initialization Settings for Android
+  final AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  //InitializationSettings for initializing settings for both platforms (Android & iOS)
+  final InitializationSettings initializationSettings =
+      InitializationSettings(android: initializationSettingsAndroid);
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
+
+  AndroidNotificationDetails _andrdoidNotifDetails =
+      AndroidNotificationDetails("channelId", "channelName");
+  NotificationDetails platformChannelSpecs =
+      NotificationDetails(android: _andrdoidNotifDetails);
+  //change later jesus
+  await flutterLocalNotificationsPlugin.show(
+      0, 'irit lock', 'ALERT: Your battery is under 20%', platformChannelSpecs,
+      payload: 'item x');
+  await flutterLocalNotificationsPlugin.show(
+      1, 'irit lock', 'ALERT:Your lock has auto unlocked', platformChannelSpecs,
+      payload: 'item x');
+  await flutterLocalNotificationsPlugin.show(
+      2, 'irit lock', 'ALERT: Your lock has auto locked', platformChannelSpecs,
+      payload: 'item x');
+  await flutterLocalNotificationsPlugin.show(3, 'irit lock',
+      'ALERT: Your lock is being tampered with', platformChannelSpecs,
+      payload: 'item x');
+  await flutterLocalNotificationsPlugin.show(
+      4, 'irit lock', 'ALERT: Your bike is out of area', platformChannelSpecs,
+      payload: 'item x');
 }
 
 /// The main app.
