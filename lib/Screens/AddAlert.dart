@@ -81,9 +81,6 @@ class _AddAlertState extends State<AddAlert> {
               if (context.read<BleBloc>().state.Connected) {
                 context
                     .read<BleBloc>()
-                    .add(WriteCharacteristicEvent(currTimeEncoded));
-                context
-                    .read<BleBloc>()
                     .add(WriteCharacteristicEvent(futureTimeEncoded));
               }
 
