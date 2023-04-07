@@ -66,7 +66,7 @@ class _OnboardState extends State<Onboard> {
           ElevatedButton(
               onPressed: () {
                 if (lastpage) {
-                  GoRouter.of(context).go('/');
+                  GoRouter.of(context).go('/scan');
                 } else {
                   _controller.animateToPage(index + 1,
                       duration: Duration(milliseconds: 600),

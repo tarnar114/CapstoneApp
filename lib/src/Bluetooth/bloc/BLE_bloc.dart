@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:capstone_app/src/BarcodeScan/Scan.dart';
 import 'dart:async';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:capstone_app/src/Bluetooth/bloc/BLE_state.dart';

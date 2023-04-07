@@ -4,18 +4,19 @@
 
 import 'package:capstone_app/Screens/AddAlert.dart';
 import 'package:capstone_app/src/Bluetooth/bloc/BLE_bloc.dart';
-import 'package:capstone_app/src/Landing/Onboard.dart';
+import 'package:capstone_app/Screens/Onboard.dart';
 import 'package:capstone_app/data/AlertStorage.dart';
 import 'package:capstone_app/src/THEME/Theme_Cubit.dart';
 import 'package:capstone_app/widgets/CustAppBar.dart';
 import 'package:capstone_app/widgets/CustDrawer.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import './Screens/Home.dart';
 import './Screens/Alerts.dart';
 import './Screens/Map.dart';
-import 'package:capstone_app/src/BarcodeScan/Scan.dart';
+import 'package:capstone_app/Screens/Scan.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -32,13 +33,22 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'shell');
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   await init();
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
   runApp(App());
 }
 
@@ -62,21 +72,21 @@ Future<void> init() async {
   NotificationDetails platformChannelSpecs =
       NotificationDetails(android: _andrdoidNotifDetails);
   //change later jesus
-  await flutterLocalNotificationsPlugin.show(
-      0, 'irit lock', 'ALERT: Your battery is under 20%', platformChannelSpecs,
-      payload: 'item x');
-  await flutterLocalNotificationsPlugin.show(
-      1, 'irit lock', 'ALERT:Your lock has auto unlocked', platformChannelSpecs,
-      payload: 'item x');
-  await flutterLocalNotificationsPlugin.show(
-      2, 'irit lock', 'ALERT: Your lock has auto locked', platformChannelSpecs,
-      payload: 'item x');
-  await flutterLocalNotificationsPlugin.show(3, 'irit lock',
-      'ALERT: Your lock is being tampered with', platformChannelSpecs,
-      payload: 'item x');
-  await flutterLocalNotificationsPlugin.show(
-      4, 'irit lock', 'ALERT: Your bike is out of area', platformChannelSpecs,
-      payload: 'item x');
+  // await flutterLocalNotificationsPlugin.show(
+  //     0, 'irit lock', 'ALERT: Your battery is under 20%', platformChannelSpecs,
+  //     payload: 'item x');
+  // await flutterLocalNotificationsPlugin.show(
+  //     1, 'irit lock', 'ALERT:Your lock has auto unlocked', platformChannelSpecs,
+  //     payload: 'item x');
+  // await flutterLocalNotificationsPlugin.show(
+  //     2, 'irit lock', 'ALERT: Your lock has auto locked', platformChannelSpecs,
+  //     payload: 'item x');
+  // await flutterLocalNotificationsPlugin.show(3, 'irit lock',
+  //     'ALERT: Your lock is being tampered with', platformChannelSpecs,
+  //     payload: 'item x');
+  // await flutterLocalNotificationsPlugin.show(
+  //     4, 'irit lock', 'ALERT: Your bike is out of area', platformChannelSpecs,
+  //     payload: 'item x');
 }
 
 /// The main app.
