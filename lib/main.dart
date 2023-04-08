@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:capstone_app/Screens/AddAlert.dart';
-import 'package:capstone_app/src/Bluetooth/bloc/BLE_bloc.dart';
+import 'package:capstone_app/src/Socket/bloc/socketBloc.dart';
 import 'package:capstone_app/Screens/Onboard.dart';
 import 'package:capstone_app/data/AlertStorage.dart';
 import 'package:capstone_app/src/THEME/Theme_Cubit.dart';
@@ -20,6 +20,7 @@ import 'package:capstone_app/Screens/Scan.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:io';
 
 // This scenario demonstrates a simple two-page app.
 //
@@ -44,11 +45,13 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
   await init();
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  if (fcmToken != null) {
+    print(fcmToken);
+  }
   runApp(App());
 }
 
@@ -92,7 +95,7 @@ Future<void> init() async {
 /// The main app.
 class App extends StatelessWidget {
   /// Creates an [App].
-  App({Key? key}) : super(key: key);
+  App({Key? key, Socket? sock}) : super(key: key);
 
   /// The title of the app.
   static const String title = 'Irit';
@@ -104,8 +107,8 @@ class App extends StatelessWidget {
           BlocProvider<ThemeCubit>(
             create: (BuildContext context) => ThemeCubit(),
           ),
-          BlocProvider<BleBloc>(
-            create: (BuildContext context) => BleBloc(),
+          BlocProvider<socketBloc>(
+            create: (BuildContext context) => socketBloc(),
           )
         ],
         child: BlocBuilder<ThemeCubit, ThemeState>(

@@ -9,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:go_router/go_router.dart';
 import 'dart:convert' show utf8;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// The screen of the second page.
 
@@ -23,6 +25,9 @@ class _AddAlertState extends State<AddAlert> {
   DateTime _dateTime = DateTime.now();
   List<bool> selectedDays = List.filled(7, false);
   String futureTime = "";
+  DocumentReference users =
+      FirebaseFirestore.instance.collection('users').doc("tanzirh10@gmail.com");
+
   List format(DateTime time, List<bool> weekdays) {
     String HourDay = DateFormat.jm().format(time);
     setState(() {
@@ -83,7 +88,7 @@ class _AddAlertState extends State<AddAlert> {
                     .read<BleBloc>()
                     .add(WriteCharacteristicEvent(futureTimeEncoded));
               }
-
+              addAlarmDB(_dateTime);
               context.go('/alerts');
             },
             child: Text("save")),
@@ -95,5 +100,16 @@ class _AddAlertState extends State<AddAlert> {
     setState(() {
       selectedDays = weekDays;
     });
+  }
+
+  Future<void> addAlarmDB(DateTime time) {
+    Map<String, dynamic> data = {
+      'alarmTime': Timestamp.fromDate(time),
+      'sent': false,
+      'sentToLock': false,
+    };
+    return users.update({
+      "alarms": FieldValue.arrayUnion([data])
+    }).catchError((err) => print("error updating: " + err.toString()));
   }
 }

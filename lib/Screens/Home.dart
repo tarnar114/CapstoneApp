@@ -4,7 +4,7 @@ import 'dart:io' show Platform;
 
 ///
 import 'package:flutter/material.dart';
-import 'package:capstone_app/src/Bluetooth/BLE_CONN.dart';
+import 'package:capstone_app/src/Socket/socketCONN.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
