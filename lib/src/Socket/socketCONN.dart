@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:capstone_app/src/Socket/bloc/socketCubit.dart';
+import 'package:capstone_app/src/Socket/bloc/socketBloc.dart';
 import 'package:capstone_app/src/Socket/bloc/socketEvent.dart';
 import 'package:capstone_app/src/Socket/bloc/socketState.dart';
 import 'package:flutter/material.dart';

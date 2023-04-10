@@ -8,9 +8,8 @@ import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:go_router/go_router.dart';
-import 'dart:convert' show utf8;
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 /// The screen of the second page.
 
@@ -25,8 +24,6 @@ class _AddAlertState extends State<AddAlert> {
   DateTime _dateTime = DateTime.now();
   List<bool> selectedDays = List.filled(7, false);
   String futureTime = "";
-  DocumentReference users =
-      FirebaseFirestore.instance.collection('users').doc("tanzirh10@gmail.com");
 
   List format(DateTime time, List<bool> weekdays) {
     String HourDay = DateFormat.jm().format(time);
@@ -83,12 +80,12 @@ class _AddAlertState extends State<AddAlert> {
               String currTimeString = DateFormat.jm().format(currTime);
               var currTimeEncoded = utf8.encode(currTimeString);
               var futureTimeEncoded = utf8.encode(futureTime);
-              if (context.read<BleBloc>().state.Connected) {
-                context
-                    .read<BleBloc>()
-                    .add(WriteCharacteristicEvent(futureTimeEncoded));
-              }
-              addAlarmDB(_dateTime);
+              // if (context.read<BleBloc>().state.Connected) {
+              //   context
+              //       .read<BleBloc>()
+              //       .add(WriteCharacteristicEvent(futureTimeEncoded));
+              // }
+              updateAlarms();
               context.go('/alerts');
             },
             child: Text("save")),
@@ -102,14 +99,19 @@ class _AddAlertState extends State<AddAlert> {
     });
   }
 
-  Future<void> addAlarmDB(DateTime time) {
-    Map<String, dynamic> data = {
-      'alarmTime': Timestamp.fromDate(time),
-      'sent': false,
-      'sentToLock': false,
+  Future<void> updateAlarms() async {
+    var profile = {
+      "email": "tanzirh10@gmail.com",
+      "alarm": futureTime,
     };
-    return users.update({
-      "alarms": FieldValue.arrayUnion([data])
-    }).catchError((err) => print("error updating: " + err.toString()));
+    var url = Uri.https('h71wd0a7g1.execute-api.us-east-1.amazonaws.com',
+        '/prod/email', profile);
+    await http
+        .patch(
+      url,
+    )
+        .then((value) {
+      print(value.body);
+    });
   }
 }
