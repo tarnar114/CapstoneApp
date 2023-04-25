@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:capstone_app/data/Alert.dart';
 import 'package:capstone_app/widgets/AlarmCard.dart';
 import 'package:flutter/material.dart';
-import '../widgets/CustAppBar.dart';
-import '../widgets/CustDrawer.dart';
 import '../widgets/AddAlarm.dart';
 import 'package:capstone_app/data/AlertStorage.dart';
 
@@ -38,12 +36,6 @@ class _AlertState extends State<Alert> {
     // return data;
   }
 
-  // void getAlerts() async {
-  //   String data = await widget.storage.readAlerts();
-  //   setState(() {
-  //     alerts = data;
-  //   });
-  // }
   Future readAlerts() async {
     for (var i = 0; i < alerts.length; i++) {
       Map<String, dynamic> map = jsonDecode(alerts[i]);
@@ -70,7 +62,7 @@ class _AlertState extends State<Alert> {
                 itemBuilder: (BuildContext context, int index) {
                   Map<String, dynamic> map = jsonDecode(alerts[index]);
                   var time = AlertClass.fromJson(map);
-                  List<String> days = time.AlertDays.cast<String>();
+                  List<String> days = time.alertDays.cast<String>();
                   return AlarmCard(time: time.time, Days: days);
                 },
                 shrinkWrap: true,

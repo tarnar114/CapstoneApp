@@ -13,7 +13,7 @@ class Map extends StatefulWidget {
 
 class _MapState extends State<Map> {
   late GoogleMapController mapController;
-  LatLng _currentPosition = LatLng(43.72667491215607, -79.24246156557156);
+  LatLng _currentPosition = LatLng(43.9439481, -78.8985234);
   Location location = Location();
   bool permStatus = false;
   bool loading = true;

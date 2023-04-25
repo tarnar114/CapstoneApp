@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:capstone_app/data/Alert.dart';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AlertStorage {
@@ -20,13 +19,11 @@ class AlertStorage {
 
   Future<String> readAlerts() async {
     try {
-      const splitter = LineSplitter();
       final file = await _localFile;
       final contents = await file.readAsString();
       return contents;
     } catch (e) {
-      print(e.toString());
-      return "";
+      return e.toString();
     }
   }
 

@@ -12,9 +12,6 @@ class ThemeState {
   factory ThemeState.light() => ThemeState(AppTheme.light, Themes.lightTheme);
 
   factory ThemeState.dark() => ThemeState(AppTheme.dark, Themes.darkTheme);
-  void printTheme() {
-    print(theme.name);
-  }
 }
 
 class ThemeCubit extends Cubit<ThemeState> {

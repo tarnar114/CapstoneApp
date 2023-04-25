@@ -1,9 +1,6 @@
 import 'package:capstone_app/data/AlertStorage.dart';
-import 'package:capstone_app/src/Bluetooth/bloc/BLE_bloc.dart';
-import 'package:capstone_app/src/Bluetooth/bloc/BLE_event.dart';
 import 'package:capstone_app/widgets/WeekdaySelector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
@@ -36,16 +33,12 @@ class _AddAlertState extends State<AddAlert> {
         bools[i] = "T";
       }
     }
-    var stringList = bools.join(" ");
-    print(stringList);
     return [HourDay, bools];
   }
 
   Future<void> saveAlert(DateTime time, List<bool> weekdays) {
-    print(time.toString());
     List Alert = format(time, weekdays);
     String alertTime = Alert[0];
-    print(alertTime);
     List<String> weekdayStrings = Alert[1];
     return widget.storage.writeAlert(alertTime, weekdayStrings);
   }
@@ -76,15 +69,10 @@ class _AddAlertState extends State<AddAlert> {
         ElevatedButton(
             onPressed: () {
               saveAlert(_dateTime, selectedDays);
-              DateTime currTime = DateTime.now();
-              String currTimeString = DateFormat.jm().format(currTime);
-              var currTimeEncoded = utf8.encode(currTimeString);
-              var futureTimeEncoded = utf8.encode(futureTime);
-              // if (context.read<BleBloc>().state.Connected) {
-              //   context
-              //       .read<BleBloc>()
-              //       .add(WriteCharacteristicEvent(futureTimeEncoded));
-              // }
+              // DateTime currTime = DateTime.now();
+              // String currTimeString = DateFormat.jm().format(currTime);
+              // var currTimeEncoded = utf8.encode(currTimeString);
+              // var futureTimeEncoded = utf8.encode(futureTime);
               updateAlarms();
               context.go('/alerts');
             },
@@ -106,12 +94,8 @@ class _AddAlertState extends State<AddAlert> {
     };
     var url = Uri.https('h71wd0a7g1.execute-api.us-east-1.amazonaws.com',
         '/prod/email', profile);
-    await http
-        .patch(
+    await http.patch(
       url,
-    )
-        .then((value) {
-      print(value.body);
-    });
+    );
   }
 }

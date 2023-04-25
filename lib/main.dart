@@ -55,26 +55,10 @@ Future<void> init() async {
     initializationSettings,
   );
 
-  AndroidNotificationDetails _andrdoidNotifDetails =
+  AndroidNotificationDetails andrdoidNotifDetails =
       AndroidNotificationDetails("channelId", "channelName");
   NotificationDetails platformChannelSpecs =
-      NotificationDetails(android: _andrdoidNotifDetails);
-  //change later jesus
-  // await flutterLocalNotificationsPlugin.show(
-  //     0, 'irit lock', 'ALERT: Your battery is under 20%', platformChannelSpecs,
-  //     payload: 'item x');
-  // await flutterLocalNotificationsPlugin.show(
-  //     1, 'irit lock', 'ALERT:Your lock has auto unlocked', platformChannelSpecs,
-  //     payload: 'item x');
-  // await flutterLocalNotificationsPlugin.show(
-  //     2, 'irit lock', 'ALERT: Your lock has auto locked', platformChannelSpecs,
-  //     payload: 'item x');
-  // await flutterLocalNotificationsPlugin.show(3, 'irit lock',
-  //     'ALERT: Your lock is being tampered with', platformChannelSpecs,
-  //     payload: 'item x');
-  // await flutterLocalNotificationsPlugin.show(
-  //     4, 'irit lock', 'ALERT: Your bike is out of area', platformChannelSpecs,
-  //     payload: 'item x');
+      NotificationDetails(android: andrdoidNotifDetails);
 }
 
 /// The main app.
@@ -107,62 +91,65 @@ class App extends StatelessWidget {
         ));
   }
 
-  final GoRouter _router =
-      GoRouter(initialLocation: '/', navigatorKey: _rootNavigatorKey, routes: [
-    ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        pageBuilder: (BuildContext context, GoRouterState state, Widget child) {
-          return NoTransitionPage(
-            child: Scaffold(
-              appBar: CustAppBar(title: "Irit"),
-              drawer: CustDrawer(),
-              body: Container(child: child),
-            ),
-          );
-        },
-        routes: [
-          GoRoute(
-              path: '/',
-              parentNavigatorKey: _shellNavigatorKey,
-              pageBuilder: (context, state) {
-                return NoTransitionPage(child: Home());
-              }),
-          GoRoute(
-              path: '/alerts',
-              parentNavigatorKey: _shellNavigatorKey,
-              pageBuilder: (context, state) {
-                return NoTransitionPage(
-                    child: Alert(
-                  storage: AlertStorage(),
-                ));
-              }),
-          GoRoute(
-              path: '/map',
-              parentNavigatorKey: _shellNavigatorKey,
-              pageBuilder: (context, state) {
-                return NoTransitionPage(child: Map());
-              }),
-          GoRoute(
-            path: '/add_alert',
-            parentNavigatorKey: _shellNavigatorKey,
-            pageBuilder: (context, state) {
+  final GoRouter _router = GoRouter(
+      initialLocation: '/onboard',
+      navigatorKey: _rootNavigatorKey,
+      routes: [
+        ShellRoute(
+            navigatorKey: _shellNavigatorKey,
+            pageBuilder:
+                (BuildContext context, GoRouterState state, Widget child) {
               return NoTransitionPage(
-                  child: AddAlert(
-                storage: AlertStorage(),
-              ));
+                child: Scaffold(
+                  appBar: CustAppBar(title: "Irit"),
+                  drawer: CustDrawer(),
+                  body: Container(child: child),
+                ),
+              );
             },
-          )
-        ]),
-    GoRoute(
-        path: '/onboard',
-        builder: ((context, state) {
-          return Onboard();
-        })),
-    GoRoute(
-      path: '/scan',
-      builder: (context, state) {
-        return Scan();
-      },
-    )
-  ]);
+            routes: [
+              GoRoute(
+                  path: '/',
+                  parentNavigatorKey: _shellNavigatorKey,
+                  pageBuilder: (context, state) {
+                    return NoTransitionPage(child: Home());
+                  }),
+              GoRoute(
+                  path: '/alerts',
+                  parentNavigatorKey: _shellNavigatorKey,
+                  pageBuilder: (context, state) {
+                    return NoTransitionPage(
+                        child: Alert(
+                      storage: AlertStorage(),
+                    ));
+                  }),
+              GoRoute(
+                  path: '/map',
+                  parentNavigatorKey: _shellNavigatorKey,
+                  pageBuilder: (context, state) {
+                    return NoTransitionPage(child: Map());
+                  }),
+              GoRoute(
+                path: '/add_alert',
+                parentNavigatorKey: _shellNavigatorKey,
+                pageBuilder: (context, state) {
+                  return NoTransitionPage(
+                      child: AddAlert(
+                    storage: AlertStorage(),
+                  ));
+                },
+              )
+            ]),
+        GoRoute(
+            path: '/onboard',
+            builder: ((context, state) {
+              return Onboard();
+            })),
+        GoRoute(
+          path: '/scan',
+          builder: (context, state) {
+            return Scan();
+          },
+        )
+      ]);
 }

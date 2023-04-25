@@ -1,8 +1,4 @@
-import 'dart:collection';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:weekday_selector/weekday_selector.dart';
 
 const List<Widget> weekDays = <Widget>[
   Text('S'),

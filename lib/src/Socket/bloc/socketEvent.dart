@@ -1,5 +1,3 @@
-import 'dart:io';
-
 abstract class socketEvent {}
 
 class socketConn extends socketEvent {}

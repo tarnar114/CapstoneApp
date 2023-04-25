@@ -65,10 +65,8 @@ class CustDrawer extends StatelessWidget {
                 final themeCubit = context.read<ThemeCubit>();
                 if (state) {
                   themeCubit.switchToLight();
-                  themeCubit.state.printTheme();
                 } else {
                   themeCubit.switchToDark();
-                  themeCubit.state.printTheme();
                 }
               });
         })

@@ -3,15 +3,13 @@ import 'dart:async';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:capstone_app/src/Bluetooth/bloc/BLE_state.dart';
 import 'package:location/location.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:capstone_app/src/Bluetooth/bloc/BLE_event.dart';
-import 'dart:convert' show utf8;
 
 class BleBloc extends Bloc<BleEvent, BleState> {
   final FlutterReactiveBle _ble = FlutterReactiveBle();
   late StreamSubscription<DiscoveredDevice> _scanStream;
   late Stream<ConnectionStateUpdate> _currConnectStream;
-  late StreamSubscription<ConnectionStateUpdate> _currConnectSub;
+  late StreamSubscription<ConnectionStateUpdate> currConnectSub;
   BleBloc() : super(BleState.initial()) {
     on<Scanning>(scanEvent);
     on<ConnectToDeviceEvent>(connectEvent);
@@ -48,12 +46,7 @@ class BleBloc extends Bloc<BleEvent, BleState> {
 
   void writeEvent(
       WriteCharacteristicEvent event, Emitter<BleState> emit) async {
-    print("writing to arduino");
-    if (state.rxChar == null) {
-      print("rxChar is null");
-    }
     try {
-      print("rxChar:" + state.rxChar.toString());
       if (state.rxChar != null) {
         try {
           await _ble.writeCharacteristicWithResponse(state.rxChar!,
@@ -75,23 +68,21 @@ class BleBloc extends Bloc<BleEvent, BleState> {
               characteristicId: state.charUuid,
               deviceId: event.update.deviceId),
           deviceId: event.update.deviceId,
-          Connected: true));
+          connected: true));
     }
   }
 
   void connectEvent(ConnectToDeviceEvent event, Emitter<BleState> emit) async {
-    print("bloc connecting");
     if (state.uniqueDevice != null) {
-      state.copyWith(Connecting: true);
+      state.copyWith(connecting: true);
       _currConnectStream = _ble.connectToAdvertisingDevice(
           id: state.uniqueDevice!.id,
           withServices: [state.serviceUuid, state.charUuid],
           prescanDuration: const Duration(seconds: 1));
-      _currConnectSub = _currConnectStream.listen((event) {
+      currConnectSub = _currConnectStream.listen((event) {
         switch (event.connectionState) {
           case DeviceConnectionState.connected:
             {
-              print("-----connected-----");
               add(DeviceConnected(event));
               add(BleSubscribe(state.rxChar!));
               // _ble.writeCharacteristicWithoutResponse(
@@ -123,27 +114,21 @@ class BleBloc extends Bloc<BleEvent, BleState> {
           default:
         }
       }, onError: (dynamic error) {
-        print("connection error");
         print(error.toString());
       });
       return;
     } else {
       emit(state.copyWith(uniqueDevice: null));
-      print("error: something is wrong with your unique device");
       return;
     }
   }
 
   void scanEvent(Scanning event, Emitter<BleState> emit) async {
-    emit(state.copyWith(Scanning: true));
-    print("bloc scanning");
+    emit(state.copyWith(scanning: true));
     Location location = Location();
     bool permGranted = false;
     PermissionStatus _permissionGranted;
-    DiscoveredDevice arduino;
-    print("scan started");
     _permissionGranted = await location.hasPermission();
-    print(_permissionGranted.name);
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
@@ -157,7 +142,6 @@ class BleBloc extends Bloc<BleEvent, BleState> {
           withServices: [state.serviceUuid],
           scanMode: ScanMode.lowLatency).listen((event) {
         if (event.name.isNotEmpty) {
-          print(event.name);
           add(ScanFoundDevice(event));
         }
       });
@@ -166,15 +150,14 @@ class BleBloc extends Bloc<BleEvent, BleState> {
 
   void foundDevice(ScanFoundDevice event, Emitter<BleState> emit) {
     if (event.device.name == "Nano 33 BLE Sense") {
-      print("connected");
-      emit(state.copyWith(Scanning: false, uniqueDevice: event.device));
+      emit(state.copyWith(scanning: false, uniqueDevice: event.device));
       _scanStream.cancel();
       add(ConnectToDeviceEvent());
     } else {
       if (state.uniqueDevice != null) {
-        emit(state.copyWith(Scanning: false));
+        emit(state.copyWith(scanning: false));
       } else {
-        emit(state.copyWith(Scanning: true, uniqueDevice: null));
+        emit(state.copyWith(scanning: true, uniqueDevice: null));
       }
     }
   }

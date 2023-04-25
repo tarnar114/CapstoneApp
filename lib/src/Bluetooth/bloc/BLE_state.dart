@@ -2,16 +2,16 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'dart:async';
 
 class BleState {
-  final bool Scanning, Connecting, Connected;
+  final bool scanning, connecting, connected;
   late DiscoveredDevice? uniqueDevice;
   late QualifiedCharacteristic? rxChar;
   final Uuid serviceUuid, charUuid;
   final List<int> arduinoRes;
   late String? deviceId;
   BleState(
-      {required this.Scanning,
-      required this.Connecting,
-      required this.Connected,
+      {required this.scanning,
+      required this.connecting,
+      required this.connected,
       this.uniqueDevice,
       this.rxChar,
       required this.arduinoRes,
@@ -20,9 +20,9 @@ class BleState {
       required this.charUuid});
   factory BleState.initial() {
     return BleState(
-        Scanning: false,
-        Connecting: false,
-        Connected: false,
+        scanning: false,
+        connecting: false,
+        connected: false,
         arduinoRes: [],
         serviceUuid: Uuid.parse("180A"),
         charUuid: Uuid.parse("2A57"),
@@ -31,9 +31,9 @@ class BleState {
         deviceId: "");
   }
   BleState copyWith(
-      {bool? Scanning,
-      bool? Connecting,
-      bool? Connected,
+      {bool? scanning,
+      bool? connecting,
+      bool? connected,
       DiscoveredDevice? uniqueDevice,
       StreamSubscription<DiscoveredDevice>? scanStream,
       QualifiedCharacteristic? rxChar,
@@ -42,9 +42,9 @@ class BleState {
       String? deviceId,
       List<int>? arduinoRes}) {
     return BleState(
-        Scanning: Scanning ?? this.Scanning,
-        Connecting: Connecting ?? this.Connecting,
-        Connected: Connected ?? this.Connected,
+        scanning: scanning ?? this.scanning,
+        connecting: connecting ?? this.connecting,
+        connected: connected ?? this.connected,
         uniqueDevice: uniqueDevice ?? this.uniqueDevice,
         rxChar: rxChar ?? this.rxChar,
         serviceUuid: serviceUuid ?? this.serviceUuid,

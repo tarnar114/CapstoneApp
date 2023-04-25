@@ -6,6 +6,8 @@ import 'package:capstone_app/src/Socket/bloc/socketState.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:http/http.dart' as http;
+
 class LockButton extends StatefulWidget {
   const LockButton({required this.callback, super.key});
   final Function callback;
@@ -15,11 +17,9 @@ class LockButton extends StatefulWidget {
 
 class LockButtonState extends State<LockButton> {
   bool lockState = true;
-
+  bool Connected = true;
   List<Widget> getChild(socketState state) {
-    if (state.Connecting) {
-      return scanning;
-    } else if (state.Connected) {
+    if (Connected) {
       if (lockState == true) {
         return Locked;
       } else {
@@ -28,6 +28,14 @@ class LockButtonState extends State<LockButton> {
     } else {
       return disconnected;
     }
+  }
+
+  Future<void> lock() async {
+    var url = Uri.https(
+        'h71wd0a7g1.execute-api.us-east-1.amazonaws.com', '/prod/lock');
+    await http.get(
+      url,
+    );
   }
 
   List<Widget> disconnected = [
@@ -92,24 +100,7 @@ class LockButtonState extends State<LockButton> {
           return ElevatedButton(
               style: style,
               onPressed: () {
-                if (!state.Connected && !state.Connected) {
-                  print("connecting");
-                  context.read<socketBloc>().add(socketConn());
-                } else if (state.Connecting) {
-                  if (lockState == true) {
-                    context.read<socketBloc>().add(socketWrite("1"));
-                    print("written 1");
-                    setState(() {
-                      lockState = false;
-                    });
-                  } else if (lockState == false) {
-                    context.read<socketBloc>().add(socketWrite("0"));
-                    print("written 0");
-                    setState(() {
-                      lockState = true;
-                    });
-                  }
-                }
+                lock();
               },
               child: Center(child: Column(children: getChild(state))));
         }),

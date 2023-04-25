@@ -1,11 +1,7 @@
-import 'dart:async';
 import 'package:capstone_app/src/Bluetooth/bloc/BLE_bloc.dart';
 import 'package:capstone_app/src/Bluetooth/bloc/BLE_event.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:location/location.dart';
 import 'package:capstone_app/src/Bluetooth/bloc/BLE_state.dart';
 
 class LockButton extends StatefulWidget {
@@ -17,18 +13,17 @@ class LockButton extends StatefulWidget {
 
 class LockButtonState extends State<LockButton> {
   bool lockState = true;
-  final FlutterReactiveBle _ble = FlutterReactiveBle();
 
   List<Widget> getChild(BleState state) {
-    if (state.Scanning) {
+    if (state.scanning) {
       return scanning;
-    } else if (state.Connecting) {
-      return Connecting;
-    } else if (state.Connected) {
+    } else if (state.connecting) {
+      return connecting;
+    } else if (state.connected) {
       if (lockState == true) {
-        return Locked;
+        return locked;
       } else {
-        return Unlocked;
+        return unlocked;
       }
     } else {
       return disconnected;
@@ -43,7 +38,7 @@ class LockButtonState extends State<LockButton> {
     Text("connect")
   ];
 
-  List<Widget> Connecting = [
+  List<Widget> connecting = [
     Icon(
       Icons.bluetooth_searching_outlined,
       size: 50,
@@ -59,7 +54,7 @@ class LockButtonState extends State<LockButton> {
     Text("Scanning")
   ];
 
-  List<Widget> Locked = [
+  List<Widget> locked = [
     Icon(
       Icons.lock,
       size: 50,
@@ -67,7 +62,7 @@ class LockButtonState extends State<LockButton> {
     Text("Lock")
   ];
 
-  List<Widget> Unlocked = [
+  List<Widget> unlocked = [
     Icon(
       Icons.lock_open,
       size: 50,
@@ -104,20 +99,16 @@ class LockButtonState extends State<LockButton> {
           return ElevatedButton(
               style: style,
               onPressed: () {
-                if (!state.Scanning && state.uniqueDevice == null) {
-                  print("Scanning and Connecting");
+                if (!state.scanning && state.uniqueDevice == null) {
                   context.read<BleBloc>().add(Scanning());
-                } else if (state.Connected) {
-                  print("sending msg");
+                } else if (state.connected) {
                   if (lockState == true) {
                     context.read<BleBloc>().add(WriteCharacteristicEvent([1]));
-                    print("written 1");
                     setState(() {
                       lockState = false;
                     });
                   } else if (lockState == false) {
                     context.read<BleBloc>().add(WriteCharacteristicEvent([0]));
-                    print("written 0");
                     setState(() {
                       lockState = true;
                     });

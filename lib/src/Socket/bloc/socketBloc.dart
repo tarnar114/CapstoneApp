@@ -12,8 +12,9 @@ class socketBloc extends Bloc<socketEvent, socketState> {
   }
   void connect(socketConn event, Emitter<socketState> emit) async {
     emit(state.copyWith(Connecting: true));
-    sock = await Socket.connect("192.168.2.22", 80).catchError(
-        (err) => {print("socket connect issue: " + err.toString())});
+    sock = await Socket.connect("192.168.2.22", 80).catchError((err) {
+      print("socket connect issue: " + err.toString());
+    });
     add(socketConnected());
   }
 

@@ -1,4 +1,3 @@
-import 'package:capstone_app/src/Bluetooth/bloc/BLE_state.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 abstract class BleEvent {}
